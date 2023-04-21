@@ -1,0 +1,24 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: master
+      - uses: microsoft/setup-msbuild@v1
+        with:
+          msbuild-architecture: x64
+      
+      - name: Zig Libc Info
+        run: zig libc
+
+      - name: Build Summary
+        run: zig build test -fsummary
